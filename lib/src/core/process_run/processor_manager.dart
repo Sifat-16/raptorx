@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:raptorx/src/core/process_run/process_controller.dart';
 
 class ProcessorManager {
-  Set<int> activeProcessors = Set();
+  Set<int> activeProcessors = {};
 
   StateNotifierProvider getNewProcessor() {
     int newProcessInt = generateRandomInt();
@@ -20,6 +20,5 @@ class ProcessorManager {
 
   generateRandomInt() {
     return Random().nextInt(1000000000);
-    ;
   }
 }

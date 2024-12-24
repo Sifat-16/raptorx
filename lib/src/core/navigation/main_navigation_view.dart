@@ -1,6 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:raptorx/src/core/navigation/navigation_controller.dart';
@@ -8,11 +6,10 @@ import 'package:raptorx/src/core/router/page_router.dart';
 import 'package:raptorx/src/core/router/route_name.dart';
 import 'package:raptorx/src/features/brand/brands/presentation/view/brand_screen.dart';
 import 'package:raptorx/src/features/brand/create_brand/presentation/view/create_brand.dart';
-
 import 'package:raptorx/src/features/home/presentation/view/home_screen.dart';
-import 'package:raptorx/src/features/home/presentation/view/navigator/home_navigator.dart';
 import 'package:raptorx/src/features/settings/presentation/view/settings_screen.dart';
-
+import 'package:raptorx/src/features/source_generation/presentation/view/source_generation_screen.dart';
+import 'package:raptorx/src/features/source_mould/presentation/view/source_mould_screen.dart';
 
 class MainNavigationView extends ConsumerStatefulWidget {
   const MainNavigationView({super.key, required this.navigator});
@@ -28,53 +25,39 @@ class _MainNavigationViewState extends ConsumerState<MainNavigationView> {
     final router = ref.watch(goRouterProvider);
 
     return NavigationView(
-      
-        appBar:  NavigationAppBar(
-          title: Text('Raptor-X'),
+      appBar: NavigationAppBar(
+          title: const Text('Raptor-X'),
           automaticallyImplyLeading: false,
-
           leading: GestureDetector(
-            onTap: (){
-
-
-              if(router.canPop()){
-
+            onTap: () {
+              if (router.canPop()) {
                 router.pop();
-              }else{
-
-              }
-
+              } else {}
             },
-            child: Icon(FluentIcons.back),
-          )
-
-        ),
-
-
+            child: const Icon(FluentIcons.back),
+          )),
       pane: NavigationPane(
-
           selected: navigationController.topIndex,
           onChanged: ref.read(navigationProvider.notifier).updateTopIndex,
           displayMode: PaneDisplayMode.open,
+          items: [
+            PaneItem(
+              key: const ValueKey(RouteName.homeRoute),
+              icon: const Icon(FluentIcons.home),
+              title: const Text('Home'),
+              body: const HomeScreen(),
+            ),
 
-        items: [
-          PaneItem(
-            key: ValueKey(RouteName.homeRoute),
-            icon: const Icon(FluentIcons.home),
-            title: const Text('Home'),
-            body: HomeScreen(),
-          ),
-
-          // PaneItem(
-          //   key: ValueKey(RouteName.homeRoute),
-          //   icon: const Icon(FluentIcons.account_management),
-          //   title: const Text('Brand'),
-          //   body: BrandScreen(),
-          // ),
-          PaneItemExpander(
+            // PaneItem(
+            //   key: ValueKey(RouteName.homeRoute),
+            //   icon: const Icon(FluentIcons.account_management),
+            //   title: const Text('Brand'),
+            //   body: BrandScreen(),
+            // ),
+            PaneItemExpander(
               icon: const Icon(FluentIcons.account_management),
               title: const Text('Brand'),
-              body: BrandScreen(),
+              body: const BrandScreen(),
               items: [
                 // PaneItemHeader(
                 //     header: const Text(''),
@@ -82,32 +65,52 @@ class _MainNavigationViewState extends ConsumerState<MainNavigationView> {
                 PaneItem(
                   icon: const Icon(FluentIcons.mail),
                   title: const Text('Create Brand'),
-                  body: CreateBrand(),
-
+                  body: const CreateBrand(),
                 ),
-
               ],
             ),
 
-        ],
+            PaneItemExpander(
+              icon: const Icon(FluentIcons.account_management),
+              title: const Text('Source Mould'),
+              body: const SourceMouldScreen(),
+              items: [
+                // PaneItem(
+                //   icon: const Icon(FluentIcons.mail),
+                //   title: const Text('Create Brand'),
+                //   body: const CreateBrand(),
+                // ),
+              ],
+            ),
 
-        footerItems: [
-          PaneItem(
-            icon: const Icon(FluentIcons.settings),
-            title: const Text('Settings'),
-            body: const SettingsScreen(),
-            onTap: () {
-              if (GoRouterState.of(context).uri.toString() != '/settings') {
-                context.go('/settings');
-              }
-            },
-          ),
-        ]
-      ),
+            PaneItemExpander(
+              icon: const Icon(FluentIcons.generate),
+              title: const Text('Source Generation'),
+              body: const SourceGenerationScreen(),
+              items: [
+                // PaneItem(
+                //   icon: const Icon(FluentIcons.mail),
+                //   title: const Text('Create Brand'),
+                //   body: const CreateBrand(),
+                // ),
+              ],
+            ),
+          ],
+          footerItems: [
+            PaneItem(
+              icon: const Icon(FluentIcons.settings),
+              title: const Text('Settings'),
+              body: const SettingsScreen(),
+              onTap: () {
+                if (GoRouterState.of(context).uri.toString() != '/settings') {
+                  context.go('/settings');
+                }
+              },
+            ),
+          ]),
     );
   }
 }
-
 
 // class NavigationPanelItems{
 //
@@ -191,10 +194,7 @@ class _MainNavigationViewState extends ConsumerState<MainNavigationView> {
 //
 // }
 class _NavigationBodyItem extends StatelessWidget {
-  const _NavigationBodyItem({
-    this.header,
-    this.content,
-  });
+  const _NavigationBodyItem(this.header, this.content);
 
   final String? header;
   final Widget? content;

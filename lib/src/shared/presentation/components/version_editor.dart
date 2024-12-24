@@ -13,8 +13,8 @@ class VersionEditor extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
-          Text("${platform}"),
-          SizedBox(
+          Text(platform),
+          const SizedBox(
             height: 10,
           ),
           Column(
@@ -24,13 +24,14 @@ class VersionEditor extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                          icon: Icon(FluentIcons.skype_minus),
+                          icon: const Icon(FluentIcons.skype_minus),
                           onPressed: () {}),
-                      Expanded(child: TextBox()),
-                      IconButton(icon: Icon(FluentIcons.add), onPressed: () {}),
+                      const Expanded(child: TextBox()),
+                      IconButton(
+                          icon: const Icon(FluentIcons.add), onPressed: () {}),
                     ],
                   ),
-                  Text("Major"),
+                  const Text("Major"),
                 ],
               ),
               Column(
@@ -38,13 +39,14 @@ class VersionEditor extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                          icon: Icon(FluentIcons.skype_minus),
+                          icon: const Icon(FluentIcons.skype_minus),
                           onPressed: () {}),
-                      Expanded(child: TextBox()),
-                      IconButton(icon: Icon(FluentIcons.add), onPressed: () {}),
+                      const Expanded(child: TextBox()),
+                      IconButton(
+                          icon: const Icon(FluentIcons.add), onPressed: () {}),
                     ],
                   ),
-                  Text("Minor"),
+                  const Text("Minor"),
                 ],
               ),
               Column(
@@ -52,13 +54,14 @@ class VersionEditor extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                          icon: Icon(FluentIcons.skype_minus),
+                          icon: const Icon(FluentIcons.skype_minus),
                           onPressed: () {}),
-                      Expanded(child: TextBox()),
-                      IconButton(icon: Icon(FluentIcons.add), onPressed: () {}),
+                      const Expanded(child: TextBox()),
+                      IconButton(
+                          icon: const Icon(FluentIcons.add), onPressed: () {}),
                     ],
                   ),
-                  Text("Patch"),
+                  const Text("Patch"),
                 ],
               ),
               Column(
@@ -66,13 +69,14 @@ class VersionEditor extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                          icon: Icon(FluentIcons.skype_minus),
+                          icon: const Icon(FluentIcons.skype_minus),
                           onPressed: () {}),
-                      Expanded(child: TextBox()),
-                      IconButton(icon: Icon(FluentIcons.add), onPressed: () {}),
+                      const Expanded(child: TextBox()),
+                      IconButton(
+                          icon: const Icon(FluentIcons.add), onPressed: () {}),
                     ],
                   ),
-                  Text("Version"),
+                  const Text("Version"),
                 ],
               ),
             ],

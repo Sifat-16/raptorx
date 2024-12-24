@@ -1,47 +1,35 @@
-import 'package:animated_login/animated_login.dart';
-import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:raptorx/src/config/server/hades.dart';
+import 'package:raptorx/src/features/auth/data/model/LoginRequest.dart';
+import 'package:raptorx/src/features/auth/data/model/SignupRequest.dart';
 import 'package:raptorx/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AuthRepositoryImpl extends AuthRepository{
+class AuthRepositoryImpl extends AuthRepository {
   @override
-  Future<UserCredential?> signup({required SignUpData signupData}) async{
-
+  Future<User?> signup({required SignupRequest signupData}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: signupData.email,
-          password: signupData.password
+      final AuthResponse res = await Hades.supabase.auth.signUp(
+        email: signupData.email,
+        password: signupData.password,
       );
-      return userCredential;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        BotToast.showText(text: 'The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        BotToast.showText(text: 'The account already exists for that email.');
-      }
+      return res.user;
     } catch (e) {
-      BotToast.showText(text: e.toString());
+      print("Error in signup ${e}");
     }
     return null;
   }
 
   @override
-  Future<UserCredential?> login({required LoginData loginData}) async{
+  Future<User?> login({required LoginRequest loginData}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: loginData.email,
-          password: loginData.password
+      final AuthResponse res = await Hades.supabase.auth.signInWithPassword(
+        email: loginData.email,
+        password: loginData.password,
       );
-      return userCredential;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        BotToast.showText(text: 'No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        BotToast.showText(text: 'Wrong password provided for that user.');
-      }
+      return res.user;
+    } catch (e) {
+      print("Error in login ${e}");
     }
     return null;
   }
-
 }

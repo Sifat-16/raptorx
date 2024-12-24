@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:raptorx/src/features/brand/create_brand/presentation/view_model/create_brand_controller.dart';
+import 'package:raptorx/src/rust/api/sif.dart';
 
 class CreateBrand extends ConsumerStatefulWidget {
   const CreateBrand({super.key});
@@ -24,20 +25,35 @@ class _CreateBrandState extends ConsumerState<CreateBrand> {
           children: [
             TextBox(
               controller: brandNameController,
-              decoration: BoxDecoration(),
+              decoration: const BoxDecoration(),
               placeholder: "Brand Name",
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             TextBox(
               controller: brandNameController,
-              decoration: BoxDecoration(),
+              decoration: const BoxDecoration(),
               placeholder: "Package name",
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
+            Button(
+                child: Text("Check rust"),
+                onPressed: () {
+                  print(compareMillion(value: BigInt.parse("10000000")));
+                }),
+            Button(
+                child: Text("Check dart"),
+                onPressed: () {
+                  DateTime start = DateTime.now();
+                  for (int i = 0; i < 10000000; i++) {
+                    print("Current number: ${i}");
+                  }
+                  DateTime end = DateTime.now();
+                  print("${end.difference(start).inMilliseconds}");
+                })
           ],
         ),
       ),

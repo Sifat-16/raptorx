@@ -1,5 +1,3 @@
-abstract class UseCase<T, R>{
-  Future<T> call({
-  required R data
-});
+abstract class UseCase<T, R> {
+  Future<T> call({required R data});
 }

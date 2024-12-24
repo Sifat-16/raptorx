@@ -3,10 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  firebase_auth
-  firebase_core
+  app_links
   flutter_acrylic
-  screen_retriever
+  screen_retriever_windows
   system_theme
   url_launcher_windows
   window_manager
@@ -14,6 +13,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   flutter_pty
+  rust_lib_raptorx
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

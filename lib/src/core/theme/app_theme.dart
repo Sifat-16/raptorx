@@ -7,13 +7,11 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import 'app_theme_generic.dart';
 
-
-
 enum NavigationIndicators { sticky, end }
 
 // Riverpod provider for AppTheme
 final appThemeProvider =
-StateNotifierProvider<AppThemeNotifier, AppThemeGeneric>((ref) {
+    StateNotifierProvider<AppThemeNotifier, AppThemeGeneric>((ref) {
   return AppThemeNotifier();
 });
 
@@ -65,7 +63,7 @@ class AppThemeNotifier extends StateNotifier<AppThemeGeneric> {
 
 AccentColor get systemAccentColor {
   if ((defaultTargetPlatform == TargetPlatform.windows ||
-      defaultTargetPlatform == TargetPlatform.android) &&
+          defaultTargetPlatform == TargetPlatform.android) &&
       !kIsWeb) {
     return AccentColor.swatch({
       'darkest': SystemTheme.accentColor.darkest,

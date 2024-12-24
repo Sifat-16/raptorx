@@ -1,10 +1,8 @@
-import 'package:animated_login/animated_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:raptorx/src/features/auth/data/model/LoginRequest.dart';
+import 'package:raptorx/src/features/auth/data/model/SignupRequest.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract class AuthRepository{
-
-  Future<UserCredential?> signup({required SignUpData signupData});
-
-  Future<UserCredential?> login({required LoginData loginData});
-
+abstract class AuthRepository {
+  Future<User?> signup({required SignupRequest signupData});
+  Future<User?> login({required LoginRequest loginData});
 }

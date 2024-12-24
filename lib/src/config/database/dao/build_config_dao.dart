@@ -8,7 +8,8 @@ class BuildConfigDao {
   final _cacheStore = stringMapStoreFactory.store(cacheDB);
   Future<Database> get _db async => await AppDatabase.instance.database;
 
-  Future<BuildConfigModel?> addBuildConfigData(BuildConfigModel buildConfigModel) async {
+  Future<BuildConfigModel?> addBuildConfigData(
+      BuildConfigModel buildConfigModel) async {
     BuildConfigModel? result;
     try {
       var data = await _cacheStore
@@ -23,12 +24,11 @@ class BuildConfigDao {
 
   Future<BuildConfigModel?> readBuildConfigData() async {
     try {
-      Map<String, dynamic> value = await _cacheStore
-          .record(key)
-          .get(await _db) as Map<String, dynamic>;
+      Map<String, dynamic> value =
+          await _cacheStore.record(key).get(await _db) as Map<String, dynamic>;
       return BuildConfigModel.fromJson(value);
     } catch (e) {
-      print( e);
+      print(e);
     }
     return null;
   }

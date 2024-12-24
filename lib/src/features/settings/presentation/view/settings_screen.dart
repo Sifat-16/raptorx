@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:raptorx/src/core/build_config/build_controller.dart';
 import 'package:raptorx/src/features/settings/presentation/view/components/select_source_code.dart';
@@ -14,18 +13,17 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _BrandScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-
     final settingsController = ref.watch(settingsProvider);
     final buildController = ref.watch(buildConfigProvider);
 
     return ScaffoldPage.withPadding(
-      header:  PageHeader(title: Text('Settings')),
+      header: const PageHeader(title: Text('Settings')),
       content: SingleChildScrollView(
         child: Column(
           children: [
-             SelectSourceCode(
+            SelectSourceCode(
               sourceCode: buildController.buildConfigModel?.sourceCodeDirectory,
-              onTapSelect: (){
+              onTapSelect: () {
                 ref.watch(settingsProvider.notifier).onSelectSourceCode();
               },
             )

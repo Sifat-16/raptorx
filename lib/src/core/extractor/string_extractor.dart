@@ -5,7 +5,7 @@ class StringExtractor {
     required String terminalOutput,
   }) {
     // Build the regex pattern dynamically
-    start = "lane_output_start${start}";
+    start = "lane_output_start$start";
     end = "${end}lane_output_end";
     String pattern = '${RegExp.escape(start)}(.*?)${RegExp.escape(end)}';
 

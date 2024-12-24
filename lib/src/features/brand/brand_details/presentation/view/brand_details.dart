@@ -51,15 +51,15 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text('${widget.brandModel.brandName}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 25, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Text('${widget.brandModel.brandLocation}'),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Button(
-                                    child: Text('Setup'),
+                                    child: const Text('Setup'),
                                     onPressed: () async {
                                       final notifier =
                                           ref.read(processProvider(3).notifier);
@@ -70,11 +70,11 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
 
                                       print("Setup finished");
                                     }),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Button(
-                                    child: Text('Clear'),
+                                    child: const Text('Clear'),
                                     onPressed: () {
                                       final notifier =
                                           ref.read(processProvider(3).notifier);
@@ -84,17 +84,17 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
                                           command: setupRunCommand);
                                       print("Clear finished");
                                     }),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Button(
-                                    child: Text('ios release'),
+                                    child: const Text('ios release'),
                                     onPressed: () {}),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Button(
-                                    child: Text('Android release'),
+                                    child: const Text('Android release'),
                                     onPressed: () {
                                       final notifier =
                                           ref.read(processProvider(1).notifier);
@@ -102,20 +102,20 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
                                           "./setup_brand.sh ${widget.brandModel.brandName} && cd shared && cd ios && pod install --repo-update && fastlane release && cd .. && cd .. && ./clear_brand.sh ${widget.brandModel.brandName}";
                                       notifier.runCommand(command: releaseIos);
                                     }),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Button(
-                                    child: Text('Android & iOS release'),
+                                    child: const Text('Android & iOS release'),
                                     onPressed: () {
                                       uploadIos();
                                       uploadAndroid();
                                     }),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Button(
-                                    child: Text('Get Version'),
+                                    child: const Text('Get Version'),
                                     onPressed: () async {
                                       String startMarker =
                                           "Ezy123321ResultExtractorStart";
@@ -153,8 +153,8 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
                                     }),
                               ],
                             ),
-                            SizedBox(height: 10),
-                            SizedBox(
+                            const SizedBox(height: 10),
+                            const SizedBox(
                               child: VersionEditor(
                                 platform: "Android",
                               ),
@@ -167,7 +167,7 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
                 ),
               ),
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CommandLineInterface(pid: 1),
@@ -183,19 +183,18 @@ class _BrandDetailsState extends ConsumerState<BrandDetails> {
         ),
       ),
     );
-    ;
   }
 
   uploadIos() {
     final notifier = ref.read(processProvider(1).notifier);
-    final releaseIos =
+    const releaseIos =
         "cd shared && cd ios && pod install --repo-update && fastlane release && cd .. && cd ..";
     notifier.runCommand(command: releaseIos);
   }
 
   uploadAndroid() {
     final notifier = ref.read(processProvider(2).notifier);
-    final releaseIos =
+    const releaseIos =
         "cd shared && cd android && fastlane deploy && cd .. && cd ..";
     notifier.runCommand(command: releaseIos);
   }

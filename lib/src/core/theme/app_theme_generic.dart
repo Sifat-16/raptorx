@@ -6,13 +6,13 @@ import 'package:system_theme/system_theme.dart';
 import 'app_theme.dart';
 
 class AppThemeGeneric {
-   AccentColor? color;
-   ThemeMode mode;
-   PaneDisplayMode displayMode;
-   NavigationIndicators indicator;
-   WindowEffect windowEffect;
-   TextDirection textDirection;
-   Locale? locale;
+  AccentColor? color;
+  ThemeMode mode;
+  PaneDisplayMode displayMode;
+  NavigationIndicators indicator;
+  WindowEffect windowEffect;
+  TextDirection textDirection;
+  Locale? locale;
 
   AppThemeGeneric({
     this.color,
@@ -49,7 +49,7 @@ class AppThemeGeneric {
 
 AccentColor get systemAccentColor {
   if ((defaultTargetPlatform == TargetPlatform.windows ||
-      defaultTargetPlatform == TargetPlatform.android) &&
+          defaultTargetPlatform == TargetPlatform.android) &&
       !kIsWeb) {
     return AccentColor.swatch({
       'darkest': SystemTheme.accentColor.darkest,

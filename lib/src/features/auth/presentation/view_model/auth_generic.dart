@@ -1,37 +1,25 @@
-import 'package:animated_login/animated_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:raptorx/src/features/auth/data/model/LoginRequest.dart';
+import 'package:raptorx/src/features/auth/data/model/SignupRequest.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AuthGeneric{
-  LoginData? loginData;
-  SignUpData? signupData;
+class AuthGeneric {
+  LoginRequest? loginData;
+  SignupRequest? signupData;
   bool loading;
-  UserCredential? userCredential;
-  String currentMode;
+  User? user;
 
+  AuthGeneric(
+      {this.loginData, this.loading = false, this.user, this.signupData});
 
-  AuthGeneric({
-    this.loginData,
-    this.loading = false,
-    this.userCredential,
-    this.signupData,
-    this.currentMode = "login"
-});
-
-  AuthGeneric update({
-    LoginData? loginData,
-    bool? loading,
-    UserCredential? userCredential,
-    SignUpData? signupData,
-    String? currentMode
-}){
+  AuthGeneric update(
+      {LoginRequest? loginData,
+      bool? loading,
+      User? user,
+      SignupRequest? signupData}) {
     return AuthGeneric(
-      loginData: loginData??this.loginData,
-      loading: loading??this.loading,
-      userCredential: userCredential??this.userCredential,
-      signupData: signupData??this.signupData,
-      currentMode: currentMode??this.currentMode
-    );
+        loginData: loginData ?? this.loginData,
+        loading: loading ?? this.loading,
+        user: user ?? this.user,
+        signupData: signupData ?? this.signupData);
   }
-
-
 }
