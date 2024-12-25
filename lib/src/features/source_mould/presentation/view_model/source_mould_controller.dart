@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:raptorx/src/features/source_generation/presentation/view_model/mixins/create_directory_structure_mixin.dart';
+import 'package:raptorx/src/features/source_mould/data/t_rex_constant_model.dart';
 import 'package:raptorx/src/features/source_mould/data/t_rex_model.dart';
 import 'package:raptorx/src/features/source_mould/presentation/view_model/mixins/directory_operation_mixin.dart';
 import 'package:raptorx/src/features/source_mould/presentation/view_model/source_mould_generic.dart';
@@ -27,6 +29,10 @@ class SourceMouldController extends StateNotifier<SourceMouldGeneric>
 
   void updateTRexModel({required TRexModel tRexModel}) {
     state = state.update(tRexModel: tRexModel);
+  }
+
+  void updateTRexConstantModel({required TRexConstantModel tRexConstantModel}) {
+    state = state.update(tRexConstantModel: tRexConstantModel);
   }
 
   createNewTRexInsideParent(
@@ -133,6 +139,116 @@ class SourceMouldController extends StateNotifier<SourceMouldGeneric>
     } catch (e) {
       print('Error importing TRexModel: $e');
       return null;
+    }
+  }
+
+  void deleteTRexConstants() {
+    state = state.update(eraseConstantModel: true);
+  }
+
+  void importTRexConstant({required BuildContext context}) async {
+    try {
+      // Prompt the user to pick a file
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Select a TRex Constant file',
+        type: FileType.custom,
+        allowedExtensions: ['tconstant'], // Restrict to .trex files
+      );
+
+      if (result == null || result.files.single.path == null) {
+        print('Import operation was canceled.');
+        return null;
+      }
+
+      String filePath = result.files.single.path!;
+
+      // Validate the file extension
+      if (!filePath.endsWith('.tconstant')) {
+        print('Invalid file format. Please select a .trex file.');
+        return null;
+      }
+
+      // Read the JSON file
+      String jsonContent = await File(filePath).readAsString();
+
+      // Decode the JSON and create a TRexModel instance
+      Map<String, dynamic> jsonData = jsonDecode(jsonContent);
+      TRexConstantModel tRexModel = TRexConstantModel.fromJson(jsonData);
+
+      state = state.update(tRexConstantModel: tRexModel);
+
+      print('TRex Constant imported successfully from $filePath');
+    } catch (e) {
+      print('Error importing TRex Constant: $e');
+      return null;
+    }
+  }
+
+  void exportTRexConstant({required BuildContext context}) async {
+    try {
+      TRexConstantModel tRexModel = state.tRexConstantModel!;
+      // Convert TRexModel to JSON
+      String jsonContent = jsonEncode(tRexModel.toJson());
+
+      // Prompt the user to pick a location to save the file
+      String? savePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save your TRex Constant file',
+        fileName:
+            'trexconstant.tconstant', // Default file name with .trex extension
+        type: FileType.custom,
+        allowedExtensions: ['tconstant'], // Custom extension
+      );
+
+      if (savePath == null) {
+        print('Save operation was canceled.');
+        return;
+      }
+
+      // Ensure the file has the .trex extension
+      if (!savePath.endsWith('.tconstant')) {
+        savePath += '.tconstant';
+      }
+
+      // Write the JSON content to the selected file
+      File file = File(savePath);
+      await file.writeAsString(jsonContent);
+      print('TRex Constant exported successfully to $savePath');
+    } catch (e) {
+      print('Error exporting TRexModel: $e');
+    }
+  }
+
+  void deleteTRexConstantSource({required String key}) {
+    TRexConstantModel? tRexConstantModel = state.tRexConstantModel;
+    if (tRexConstantModel != null) {
+      tRexConstantModel.data.remove(key);
+      state = state.update(tRexConstantModel: tRexConstantModel);
+    }
+  }
+
+  List<String> checkValidConstant({required String content}) {
+    TRexConstantModel? tRexConstantModel = state.tRexConstantModel;
+    if (tRexConstantModel == null) {
+      BotToast.showText(text: "Add Valid Constant File First");
+      return ["No Valid Constant File"];
+    } else {
+      // Regular expression to match <<rptr constant: some_value /rptr>>
+      final regex = RegExp(r'<<rptr constant:\s*(\w+)\s*/rptr>>');
+      final matches = regex.allMatches(content);
+
+      List<String> invalidConstants = [];
+      for (final match in matches) {
+        // Extract the constant value
+        String constantKey = match.group(1) ?? '';
+
+        // Check if the constant exists in any of the TRexConstantModel instances
+        bool isValid = tRexConstantModel.data.containsKey(constantKey);
+
+        if (!isValid) {
+          invalidConstants.add(constantKey);
+        }
+      }
+      return invalidConstants;
     }
   }
 }

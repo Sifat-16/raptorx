@@ -60,16 +60,26 @@ class _ManualFileScreenState extends ConsumerState<ManualFileScreen> {
                   tRexModel.directoryInstanceType = DirectoryInstanceType.FILE;
                   tRexModel.name = fileNameController.text.trim();
                   tRexModel.content = fileContentController.text.trim();
-                  if (widget.isNewCreate) {
-                    ref
-                        .read(sourceMouldProvider.notifier)
-                        .createNewTRexInsideParent(
-                            tRexModel: tRexModel, parent: widget.parentId);
+
+                  List<String> invalidConstants = ref
+                      .read(sourceMouldProvider.notifier)
+                      .checkValidConstant(content: tRexModel.content ?? "");
+
+                  if (invalidConstants.isEmpty) {
+                    if (widget.isNewCreate) {
+                      ref
+                          .read(sourceMouldProvider.notifier)
+                          .createNewTRexInsideParent(
+                              tRexModel: tRexModel, parent: widget.parentId);
+                    } else {
+                      ref
+                          .read(sourceMouldProvider.notifier)
+                          .updateNewTRexInsideParent(
+                              tRexModel: tRexModel, parent: widget.parentId);
+                    }
                   } else {
-                    ref
-                        .read(sourceMouldProvider.notifier)
-                        .updateNewTRexInsideParent(
-                            tRexModel: tRexModel, parent: widget.parentId);
+                    BotToast.showText(
+                        text: "Invalid constants ${invalidConstants}");
                   }
                 }),
             SizedBox(

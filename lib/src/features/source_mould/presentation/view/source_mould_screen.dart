@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:raptorx/src/core/directory/directory_selection.dart';
+import 'package:raptorx/src/features/source_mould/presentation/view/component/t_rex_constants.dart';
 import 'package:raptorx/src/features/source_mould/presentation/view/component/t_rex_tree.dart';
 import 'package:raptorx/src/features/source_mould/presentation/view_model/source_mould_controller.dart';
 
@@ -64,6 +65,10 @@ class _SourceMouldScreenState extends ConsumerState<SourceMouldScreen> {
                         text: "Storage Must be named as TrexStorage");
                   }
                 }),
+            SizedBox(
+              height: 20,
+            ),
+            TRexConstants(),
             SizedBox(
               height: 20,
             ),

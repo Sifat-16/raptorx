@@ -105,6 +105,19 @@ class _TRexModelTreeState extends ConsumerState<TRexModelTree> {
                         .read(sourceMouldProvider.notifier)
                         .createNewResourceFile(
                             context: context,
+                            isDirectory: false,
+                            tRexModel: TRexModel(),
+                            parentId: model?.id ?? "");
+                  }),
+              MenuFlyoutSeparator(),
+              MenuFlyoutItem(
+                  text: const Text('Add Resource Folder'),
+                  onPressed: () {
+                    ref
+                        .read(sourceMouldProvider.notifier)
+                        .createNewResourceFile(
+                            context: context,
+                            isDirectory: true,
                             tRexModel: TRexModel(),
                             parentId: model?.id ?? "");
                   }),
