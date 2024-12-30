@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:path/path.dart';
 import 'package:raptorx/src/core/enum/DirectoryInstanceType.dart';
 import 'package:raptorx/src/features/source_mould/data/t_rex_constant_model.dart';
 import 'package:raptorx/src/features/source_mould/data/t_rex_model.dart';
 
 mixin CreateDirectoryStructureMixin {
-  void createDirectoryStructure(String rootPath, String trexStoragePath,
+  createDirectoryStructure(String rootPath, String trexStoragePath,
       TRexModel model, TRexConstantModel trexConstantModel) async {
     // First, create the base directory for the root model
     if (model.directoryInstanceType == DirectoryInstanceType.FOLDER) {
@@ -93,59 +94,53 @@ mixin CreateDirectoryStructureMixin {
     if (model.directoryInstanceType == DirectoryInstanceType.FOLDER &&
         model.tRexModel != null) {
       for (var child in model.tRexModel!) {
-        createDirectoryStructure('$rootPath/${model.name}', trexStoragePath,
-            child, trexConstantModel); // Recursive call
+        await createDirectoryStructure('$rootPath/${model.name}',
+            trexStoragePath, child, trexConstantModel); // Recursive call
       }
     }
   }
 
-  // // Helper function to copy contents of a directory (files and subdirectories)
-  // Future<void> _copyDirectoryContents(
-  //     Directory source, String destinationPath) async {
-  //   // Iterate over the files and subdirectories inside the source directory
-  //   await for (var entity in source.list()) {
-  //     final relativePath =
-  //         entity.uri.pathSegments.last; // Get last segment of the path
-  //
-  //     if (entity is File) {
-  //       // Copy each file to the destination folder
-  //       final destinationFile = File('$destinationPath/$relativePath');
-  //       final destinationDir = destinationFile.parent;
-  //
-  //       // Create directories in the destination path if not exist
-  //       if (!await destinationDir.exists()) {
-  //         await destinationDir.create(recursive: true);
-  //       }
-  //
-  //       await entity.copy(destinationFile.path);
-  //       print('Copied file: ${entity.path} to ${destinationFile.path}');
-  //     } else if (entity is Directory) {
-  //       // Recursively copy the contents of subdirectories into the destination folder
-  //       await _copyDirectoryContents(entity, '$destinationPath/$relativePath');
-  //     }
-  //   }
-  // }
+  void copyDirectory(Directory source, Directory destination) =>
+      source.listSync(recursive: false).forEach((var entity) {
+        if (entity is Directory) {
+          var newDirectory =
+              Directory(join(destination.absolute.path, basename(entity.path)));
+          newDirectory.createSync(recursive: true);
 
-  void copyDirectory(Directory source, Directory destination) {
-    // If the destination directory does not exist, create it
-    if (!destination.existsSync()) {
-      destination.createSync(recursive: true);
+          copyDirectory(entity.absolute, newDirectory);
+        } else if (entity is File) {
+          if (!destination.existsSync()) {
+            destination.createSync(recursive: true);
+          }
+
+          try {
+            entity.copySync(join(destination.path, basename(entity.path)));
+          } catch (e) {
+            print("Error while copying file ${e.toString()}");
+          }
+        }
+      });
+
+  void copyFile(String sourcePath, String destinationPath) {
+    try {
+      // Create a File object for the source file
+      File sourceFile = File(sourcePath);
+
+      // Check if the source file exists
+      if (sourceFile.existsSync()) {
+        // Create a File object for the destination
+        File destinationFile = File(destinationPath);
+
+        print("Destination file exists ${destinationFile.existsSync()}");
+        // Copy the content of the source file to the destination
+        sourceFile.copySync(destinationPath);
+
+        print("File copied to $destinationPath");
+      } else {
+        print("Source file does not exist at $sourcePath");
+      }
+    } catch (e) {
+      print("Error while copying file: $e");
     }
-
-    print(destination.listSync(recursive: true));
-
-    // // Iterate over the contents of the source directory
-    // for (var entity in source.listSync()) {
-    //   var newDestination = Directory(
-    //       '${destination.path}${Platform.pathSeparator}${entity.uri.pathSegments.last}');
-    //
-    //   if (entity is File) {
-    //     // If it's a file, copy it to the destination
-    //     entity.copySync(newDestination.path);
-    //   } else if (entity is Directory) {
-    //     // If it's a directory, recursively copy its contents
-    //     copyDirectory(entity, newDestination);
-    //   }
-    // }
   }
 }

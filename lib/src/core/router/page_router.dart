@@ -5,8 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:raptorx/src/core/navigation/main_navigation_view.dart';
 import 'package:raptorx/src/core/router/route_name.dart';
 import 'package:raptorx/src/features/auth/presentation/view_model/auth_controller.dart';
-import 'package:raptorx/src/features/brand/brands/presentation/view/brand_screen.dart';
-import 'package:raptorx/src/features/brand/create_brand/presentation/view/create_brand.dart';
 import 'package:raptorx/src/features/home/presentation/view/home_screen.dart';
 import 'package:raptorx/src/features/settings/presentation/view/settings_screen.dart';
 import 'package:raptorx/src/features/welcome/presentation/view/welcome_screen.dart';
@@ -42,33 +40,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                       builder: (context, state) {
                         return const HomeScreen();
                       })
-                ]),
-            StatefulShellBranch(
-                navigatorKey: brandNavigatorKey,
-                routes: <RouteBase>[
-                  GoRoute(
-                      path: "/brand",
-                      name: RouteName.brandRoute,
-                      builder: (context, state) {
-                        return const BrandScreen();
-                      },
-                      routes: [
-                        GoRoute(
-                            path: "create_brand",
-                            name: RouteName.createBrandRoute,
-                            pageBuilder: (context, state) {
-                              return CustomTransitionPage(
-                                  key: state.pageKey,
-                                  child: const CreateBrand(),
-                                  transitionsBuilder:
-                                      (context, anim, sanim, child) {
-                                    return FadeTransition(
-                                      opacity: anim,
-                                      child: child,
-                                    );
-                                  });
-                            })
-                      ])
                 ]),
             StatefulShellBranch(routes: <RouteBase>[
               GoRoute(

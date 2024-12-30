@@ -5,19 +5,24 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:raptorx/src/core/extractor/file/file_extractor.dart';
+import 'package:raptorx/src/features/brand_v2/brands/data/model/brand_model.dart';
+import 'package:raptorx/src/features/brand_v2/brands/presentation/view_model/brands_v2_controller.dart';
 import 'package:raptorx/src/features/source_generation/presentation/view_model/mixins/create_directory_structure_mixin.dart';
 import 'package:raptorx/src/features/source_mould/data/t_rex_constant_model.dart';
 import 'package:raptorx/src/features/source_mould/data/t_rex_model.dart';
 import 'package:raptorx/src/features/source_mould/presentation/view_model/mixins/directory_operation_mixin.dart';
 import 'package:raptorx/src/features/source_mould/presentation/view_model/source_mould_generic.dart';
 
-final sourceMouldProvider =
-    StateNotifierProvider<SourceMouldController, SourceMouldGeneric>(
-        (ref) => SourceMouldController());
+final sourceMouldProvider = StateNotifierProvider.autoDispose<
+    SourceMouldController,
+    SourceMouldGeneric>((ref) => SourceMouldController(ref));
 
 class SourceMouldController extends StateNotifier<SourceMouldGeneric>
     with CreateDirectoryStructureMixin, DirectoryOperationMixin {
-  SourceMouldController() : super(SourceMouldGeneric());
+  SourceMouldController(this.ref) : super(SourceMouldGeneric());
+
+  Ref ref;
 
   void updateDirectory({required String directory}) {
     state = state.update(selectedDirectory: directory);
@@ -125,13 +130,8 @@ class SourceMouldController extends StateNotifier<SourceMouldGeneric>
         return null;
       }
 
-      // Read the JSON file
-      String jsonContent = await File(filePath).readAsString();
-
-      // Decode the JSON and create a TRexModel instance
-      Map<String, dynamic> jsonData = jsonDecode(jsonContent);
-      TRexModel tRexModel = TRexModel.fromJson(jsonData);
-
+      TRexModel tRexModel = await FileExtractor.extractDataFromFile(
+          file: File(filePath), extractor: (json) => TRexModel.fromJson(json));
       state = state.update(tRexModel: tRexModel);
 
       print('TRexModel imported successfully from $filePath');
@@ -168,14 +168,12 @@ class SourceMouldController extends StateNotifier<SourceMouldGeneric>
         return null;
       }
 
-      // Read the JSON file
-      String jsonContent = await File(filePath).readAsString();
+      TRexConstantModel tRexConstantModel =
+          await FileExtractor.extractDataFromFile(
+              file: File(filePath),
+              extractor: (json) => TRexConstantModel.fromJson(json));
 
-      // Decode the JSON and create a TRexModel instance
-      Map<String, dynamic> jsonData = jsonDecode(jsonContent);
-      TRexConstantModel tRexModel = TRexConstantModel.fromJson(jsonData);
-
-      state = state.update(tRexConstantModel: tRexModel);
+      state = state.update(tRexConstantModel: tRexConstantModel);
 
       print('TRex Constant imported successfully from $filePath');
     } catch (e) {
@@ -249,6 +247,41 @@ class SourceMouldController extends StateNotifier<SourceMouldGeneric>
         }
       }
       return invalidConstants;
+    }
+  }
+
+  void initiateMould({required BrandModel brandModel}) async {
+    try {
+      Directory brandDirectory = Directory(
+          "${ref.read(brandsV2Provider).sourceLocation}${brandModel.brandLocation}");
+      List<FileSystemEntity> files = brandDirectory.listSync();
+
+      File trex = File(files.firstWhere((entity) {
+        return (entity is File && entity.path.contains(".trex"));
+      }).path);
+
+      TRexModel tRexModel = await FileExtractor.extractDataFromFile(
+          file: trex, extractor: (json) => TRexModel.fromJson(json));
+
+      File trexConstant = File(files.firstWhere((entity) {
+        return (entity is File && entity.path.contains(".tconstant"));
+      }).path);
+
+      TRexConstantModel tRexConstantModel =
+          await FileExtractor.extractDataFromFile(
+              file: trexConstant,
+              extractor: (json) => TRexConstantModel.fromJson(json));
+
+      String? selectedTrexStorage =
+          Directory("${brandDirectory.path}/TrexStorage").existsSync()
+              ? "${brandDirectory.path}/TrexStorage"
+              : null;
+      state = state.update(
+          tRexModel: tRexModel,
+          tRexConstantModel: tRexConstantModel,
+          selectedTRexStorageDirectory: selectedTrexStorage);
+    } catch (e) {
+      print("Error while fetching files ${e.toString()}");
     }
   }
 }

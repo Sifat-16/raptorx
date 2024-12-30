@@ -1,31 +1,18 @@
 import 'dart:io';
 
-import 'package:raptorx/src/core/directory/raptor_directory.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class DirectoryHandler {
-  static Future<List<RaptorDirectory>> fetchDirectoryFromLocation(
-      {required String location}) async {
+  static bool checkValidDirectory(
+      {required String location, bool showToast = false}) {
     Directory directory = Directory(location);
-    List<RaptorDirectory> raptorDirectories = [];
     if (directory.existsSync()) {
-      try {
-        List<FileSystemEntity> files = directory.listSync();
-        for (var entity in files) {
-          RaptorDirectory raptorDirectory;
-          if (entity is File) {
-            raptorDirectory = RaptorDirectory(
-                name: entity.path.split("/").last,
-                location: entity.path,
-                raptorDirectoryType: RaptorDirectoryType.FILE);
-          } else {
-            raptorDirectory = RaptorDirectory(
-                name: entity.path.split("/").last,
-                location: entity.path,
-                raptorDirectoryType: RaptorDirectoryType.FOLDER);
-          }
-        }
-      } catch (e) {}
+      return true;
     }
-    return raptorDirectories;
+    if (showToast) {
+      BotToast.showText(text: "Directory doesn't exists");
+    }
+
+    return false;
   }
 }

@@ -31,7 +31,25 @@ class SourceGenerationController extends StateNotifier<SourceGenerationGeneric>
     }
   }
 
-  void updateDirectory({required String directory}) async {
+  createSourceCodeFromBrand({String? brandLocation, String? createAt}) async {
+    if (brandLocation != null && createAt != null) {
+      await updateDirectory(directory: brandLocation);
+      TRexModel? tRexModel = state.tRexModel;
+      String? trexStoragePath = state.trexStoragePath;
+      TRexConstantModel? tRexConstantModel = state.tRexConstantModel;
+
+      if (tRexModel != null &&
+          trexStoragePath != null &&
+          tRexConstantModel != null) {
+        await createDirectoryStructure(
+            createAt, trexStoragePath, tRexModel, tRexConstantModel);
+      } else {
+        print("issue while creating sourcecode");
+      }
+    }
+  }
+
+  updateDirectory({required String directory}) async {
     final dir = Directory(directory);
 
     if (await dir.exists()) {

@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:raptorx/src/core/navigation/navigation_controller.dart';
 import 'package:raptorx/src/core/router/page_router.dart';
 import 'package:raptorx/src/core/router/route_name.dart';
-import 'package:raptorx/src/features/brand/brands/presentation/view/brand_screen.dart';
-import 'package:raptorx/src/features/brand/create_brand/presentation/view/create_brand.dart';
+import 'package:raptorx/src/features/brand_v2/brands/presentation/view/brands_v2_screen.dart';
 import 'package:raptorx/src/features/home/presentation/view/home_screen.dart';
 import 'package:raptorx/src/features/settings/presentation/view/settings_screen.dart';
 import 'package:raptorx/src/features/source_generation/presentation/view/source_generation_screen.dart';
@@ -47,29 +46,12 @@ class _MainNavigationViewState extends ConsumerState<MainNavigationView> {
               title: const Text('Home'),
               body: const HomeScreen(),
             ),
-
-            // PaneItem(
-            //   key: ValueKey(RouteName.homeRoute),
-            //   icon: const Icon(FluentIcons.account_management),
-            //   title: const Text('Brand'),
-            //   body: BrandScreen(),
-            // ),
             PaneItemExpander(
               icon: const Icon(FluentIcons.account_management),
-              title: const Text('Brand'),
-              body: const BrandScreen(),
-              items: [
-                // PaneItemHeader(
-                //     header: const Text(''),
-                // ),
-                PaneItem(
-                  icon: const Icon(FluentIcons.mail),
-                  title: const Text('Create Brand'),
-                  body: const CreateBrand(),
-                ),
-              ],
+              title: const Text('Brand V2'),
+              body: const BrandsV2Screen(),
+              items: [],
             ),
-
             PaneItemExpander(
               icon: const Icon(FluentIcons.account_management),
               title: const Text('Source Mould'),
@@ -82,7 +64,6 @@ class _MainNavigationViewState extends ConsumerState<MainNavigationView> {
                 // ),
               ],
             ),
-
             PaneItemExpander(
               icon: const Icon(FluentIcons.generate),
               title: const Text('Source Generation'),

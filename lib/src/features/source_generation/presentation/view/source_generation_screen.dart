@@ -47,7 +47,7 @@ class _SourceGenerationScreenState
           children: [
             DirectorySelection(
                 title: "Select Directory To Generate",
-                sourceCode: sourceGenerate.selectedLocationToGenerate,
+                sourceLocation: sourceGenerate.selectedLocationToGenerate,
                 onDirectorySelect: (directory) {
                   ref
                       .read(sourceGenerationProvider.notifier)

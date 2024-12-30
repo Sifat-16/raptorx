@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:raptorx/src/features/brand/brand_details/presentation/view/brand_details.dart';
-
 import 'dart:io';
 
-import 'package:raptorx/src/features/brand/brands/data/model/brand_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:raptorx/src/features/brand_v2/brand_details/presentation/view/brand_details_navigation_screen.dart';
+import 'package:raptorx/src/features/brand_v2/brands/data/model/brand_model.dart';
 
 class BrandCard extends ConsumerStatefulWidget {
   final BrandModel brandModel;
@@ -32,6 +31,7 @@ class _BrandCardState extends ConsumerState<BrandCard>
 
   @override
   Widget build(BuildContext context) {
+    print("brand image ${widget.brandModel.brandImage}");
     return MouseRegion(
       onEnter: (_) {
         _controller.forward();
@@ -42,7 +42,7 @@ class _BrandCardState extends ConsumerState<BrandCard>
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => BrandDetails(
+              builder: (_) => BrandDetailsNavigationScreen(
                     brandModel: widget.brandModel,
                   )));
         },

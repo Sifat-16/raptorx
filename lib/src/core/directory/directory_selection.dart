@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DirectorySelection extends ConsumerStatefulWidget {
   const DirectorySelection(
       {super.key,
-      required this.sourceCode,
+      required this.sourceLocation,
       required this.onDirectorySelect,
       required this.title});
-  final String? sourceCode;
+  final String? sourceLocation;
   final String title;
   final Function(String) onDirectorySelect;
 
@@ -31,7 +31,7 @@ class _SelectSourceCodeState extends ConsumerState<DirectorySelection> {
             Expanded(
               child: TextBox(
                 enabled: false,
-                placeholder: widget.sourceCode ?? "Select Directory",
+                placeholder: widget.sourceLocation ?? "Select Directory",
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(0),
                 ),

@@ -1,9 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 class VersionEditor extends StatelessWidget {
-  const VersionEditor({super.key, required this.platform});
+  const VersionEditor(
+      {super.key, required this.platform, required this.textEditingController});
 
   final String platform;
+  final TextEditingController textEditingController;
 
   @override
   Widget build(BuildContext context) {
@@ -17,70 +19,11 @@ class VersionEditor extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          Column(
-            children: [
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          icon: const Icon(FluentIcons.skype_minus),
-                          onPressed: () {}),
-                      const Expanded(child: TextBox()),
-                      IconButton(
-                          icon: const Icon(FluentIcons.add), onPressed: () {}),
-                    ],
-                  ),
-                  const Text("Major"),
-                ],
-              ),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          icon: const Icon(FluentIcons.skype_minus),
-                          onPressed: () {}),
-                      const Expanded(child: TextBox()),
-                      IconButton(
-                          icon: const Icon(FluentIcons.add), onPressed: () {}),
-                    ],
-                  ),
-                  const Text("Minor"),
-                ],
-              ),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          icon: const Icon(FluentIcons.skype_minus),
-                          onPressed: () {}),
-                      const Expanded(child: TextBox()),
-                      IconButton(
-                          icon: const Icon(FluentIcons.add), onPressed: () {}),
-                    ],
-                  ),
-                  const Text("Patch"),
-                ],
-              ),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          icon: const Icon(FluentIcons.skype_minus),
-                          onPressed: () {}),
-                      const Expanded(child: TextBox()),
-                      IconButton(
-                          icon: const Icon(FluentIcons.add), onPressed: () {}),
-                    ],
-                  ),
-                  const Text("Version"),
-                ],
-              ),
-            ],
-          ),
+          TextBox(
+            controller: textEditingController,
+            decoration: BoxDecoration(),
+            placeholder: "${platform} version (major.minor.patch+build)",
+          )
         ],
       ),
     );
