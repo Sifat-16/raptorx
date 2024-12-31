@@ -22,8 +22,8 @@ class BrandDetailsComponent extends ConsumerStatefulWidget {
 class _BrandDetailsComponentState extends ConsumerState<BrandDetailsComponent> {
   @override
   Widget build(BuildContext context) {
-    final process1 = ref.watch(processProvider(1));
-    // final process2 = ref.watch(processProvider(2));
+    final process1 = ref.watch(processProvider("brand_details"));
+    final process2 = ref.watch(processProvider("rtc_copy"));
     // final buildConfig = ref.watch(buildConfigProvider);
     return SingleChildScrollView(
       child: Column(
@@ -91,28 +91,39 @@ class _BrandDetailsComponentState extends ConsumerState<BrandDetailsComponent> {
                               Button(
                                   child: const Text('Clear'),
                                   onPressed: () {
-                                    final notifier =
-                                        ref.read(processProvider(3).notifier);
-                                    final setupRunCommand =
-                                        "./clear_brand.sh ${widget.brandModel.brandName}";
-                                    notifier.runCommand(
-                                        command: setupRunCommand);
-                                    print("Clear finished");
+                                    // final notifier =
+                                    //     ref.read(processProvider(3).notifier);
+                                    // final setupRunCommand =
+                                    //     "./clear_brand.sh ${widget.brandModel.brandName}";
+                                    // notifier.runCommand(
+                                    //     command: setupRunCommand);
+                                    // print("Clear finished");
                                   }),
                               const SizedBox(
                                 width: 20,
                               ),
                               Button(
                                   child: const Text('ios release'),
-                                  onPressed: () {}),
+                                  onPressed: () async {
+                                    final notifier = ref.read(
+                                        processProvider("brand_details")
+                                            .notifier);
+
+                                    final String releaseIOS = await ref
+                                        .read(brandDetailsProvider.notifier)
+                                        .getIOSReleaseCommand();
+
+                                    notifier.runCommand(command: releaseIOS);
+                                  }),
                               const SizedBox(
                                 width: 20,
                               ),
                               Button(
                                   child: const Text('Android release'),
                                   onPressed: () async {
-                                    final notifier =
-                                        ref.read(processProvider(1).notifier);
+                                    final notifier = ref.read(
+                                        processProvider("brand_details")
+                                            .notifier);
 
                                     final String releaseAndroid = await ref
                                         .read(brandDetailsProvider.notifier)
@@ -129,8 +140,8 @@ class _BrandDetailsComponentState extends ConsumerState<BrandDetailsComponent> {
                               Button(
                                   child: const Text('Android & iOS release'),
                                   onPressed: () {
-                                    uploadIos();
-                                    uploadAndroid();
+                                    // uploadIos();
+                                    // uploadAndroid();
                                   }),
                               const SizedBox(
                                 width: 20,
@@ -142,8 +153,9 @@ class _BrandDetailsComponentState extends ConsumerState<BrandDetailsComponent> {
                                         "Ezy123321ResultExtractorStart";
                                     String endMarker =
                                         "Ezy123321ResultExtractorEnd";
-                                    final notifier1 =
-                                        ref.read(processProvider(1).notifier);
+                                    final notifier1 = ref.read(
+                                        processProvider("brand_details")
+                                            .notifier);
 
                                     try {
                                       await notifier1.runCommand(
@@ -186,7 +198,8 @@ class _BrandDetailsComponentState extends ConsumerState<BrandDetailsComponent> {
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              CommandLineInterface(pid: 1),
+              CommandLineInterface(pid: "brand_details"),
+              CommandLineInterface(pid: "rtc_copy"),
               // CommandLineInterface(
               //   pid: 2,
               // ),
@@ -200,17 +213,17 @@ class _BrandDetailsComponentState extends ConsumerState<BrandDetailsComponent> {
     );
   }
 
-  uploadIos() {
-    final notifier = ref.read(processProvider(1).notifier);
-    const releaseIos =
-        "cd shared && cd ios && pod install --repo-update && fastlane release && cd .. && cd ..";
-    notifier.runCommand(command: releaseIos);
-  }
-
-  uploadAndroid() {
-    final notifier = ref.read(processProvider(2).notifier);
-    const releaseIos =
-        "cd shared && cd android && fastlane deploy && cd .. && cd ..";
-    notifier.runCommand(command: releaseIos);
-  }
+  // uploadIos() {
+  //   final notifier = ref.read(processProvider("brand_details").notifier);
+  //   const releaseIos =
+  //       "cd shared && cd ios && pod install --repo-update && fastlane release && cd .. && cd ..";
+  //   notifier.runCommand(command: releaseIos);
+  // }
+  //
+  // uploadAndroid() {
+  //   // final notifier = ref.read(processProvider(2).notifier);
+  //   // const releaseIos =
+  //   //     "cd shared && cd android && fastlane deploy && cd .. && cd ..";
+  //   // notifier.runCommand(command: releaseIos);
+  // }
 }

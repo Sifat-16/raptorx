@@ -13,7 +13,7 @@ import 'package:xterm/ui.dart';
 
 // Using a family provider to create multiple instances of ProcessController
 final processProvider =
-    StateNotifierProvider.family<ProcessController, ProcessGeneric, int>(
+    StateNotifierProvider.family<ProcessController, ProcessGeneric, String>(
         (ref, id) {
   return ProcessController(ref, id);
 });
@@ -22,7 +22,7 @@ class ProcessController extends StateNotifier<ProcessGeneric> {
   ProcessController(this.ref, this.id) : super(ProcessGeneric());
 
   final Ref ref;
-  final int id; // Unique ID for this instance
+  final String id; // Unique ID for this instance
   final terminal = Terminal(maxLines: 100000);
   final terminalController = TerminalController();
   final String startSignal = "start-signal-463374t473937384acasd";

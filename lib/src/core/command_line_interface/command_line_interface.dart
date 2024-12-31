@@ -7,7 +7,7 @@ import 'package:xterm/ui.dart';
 
 class CommandLineInterface extends ConsumerStatefulWidget {
   const CommandLineInterface({super.key, required this.pid});
-  final int pid;
+  final String pid;
 
   @override
   _CommandLineInterfaceState createState() => _CommandLineInterfaceState();

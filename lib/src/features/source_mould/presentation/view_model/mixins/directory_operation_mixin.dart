@@ -352,22 +352,24 @@ mixin DirectoryOperationMixin {
               TRexConstantModel? trexConstantsModel =
                   container.read(sourceMouldProvider).tRexConstantModel;
               if (trexConstantsModel != null) {
-                if (trexConstantsModel.data
-                    .containsKey(constantName.text.trim())) {
-                  BotToast.showText(text: "This constant value already exists");
-                } else {
-                  trexConstantsModel.data.update(constantName.text.trim(),
-                      (value) => constantValue.text.trim(),
-                      ifAbsent: () => constantValue.text.trim());
-                  if (toUpdate != null) {
-                    trexConstantsModel.data.remove(toUpdate.keys.first);
-                  }
-                  container
-                      .read(sourceMouldProvider.notifier)
-                      .updateTRexConstantModel(
-                          tRexConstantModel: trexConstantsModel);
-                  Navigator.pop(context);
+                if (toUpdate != null) {
+                  trexConstantsModel.data.remove(toUpdate.keys.first);
                 }
+                trexConstantsModel.data.update(constantName.text.trim(),
+                    (value) => constantValue.text.trim(),
+                    ifAbsent: () => constantValue.text.trim());
+
+                container
+                    .read(sourceMouldProvider.notifier)
+                    .updateTRexConstantModel(
+                        tRexConstantModel: trexConstantsModel);
+                Navigator.pop(context);
+                // if (trexConstantsModel.data
+                //     .containsKey(constantName.text.trim())) {
+                //   BotToast.showText(text: "This constant value already exists");
+                // } else {
+                //
+                // }
               }
 
               // Delete file here

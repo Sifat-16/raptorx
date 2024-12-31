@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
+import 'package:raptorx/src/core/process_run/process_controller.dart';
 import 'package:raptorx/src/features/brand_v2/brand_details/presentation/view_model/brand_details_generic.dart';
 import 'package:raptorx/src/features/brand_v2/brands/data/model/brand_model.dart';
 import 'package:raptorx/src/features/brand_v2/brands/presentation/view_model/brands_v2_controller.dart';
@@ -60,8 +61,12 @@ class BrandDetailsController extends StateNotifier<BrandDetailsGeneric> {
     Directory productionDirectory =
         Directory(join(sourceLocation, "production"));
 
-    if (productionDirectory.existsSync()) {
-      productionDirectory.deleteSync(recursive: true);
+    Directory duplicateDirectoryToDelete = Directory(
+        join(sourceLocation, "production", "${state.brandModel?.brandName}"));
+
+    if (duplicateDirectoryToDelete.existsSync()) {
+      duplicateDirectoryToDelete.deleteSync(recursive: true);
+      await Future.delayed(Duration(seconds: 5));
     }
 
     productionDirectory.createSync();
@@ -130,37 +135,6 @@ class BrandDetailsController extends StateNotifier<BrandDetailsGeneric> {
         .read(sourceGenerationProvider.notifier)
         .copyFile(copyFromMobileRTCANDROIDPath, copyToMobileRTCANDROIDPath);
 
-    // MobileRTCXcframework from global to brand/ios
-
-    Directory copyFromMobileRTCXcframeworkDirectory =
-        Directory(join(sourceLocation, "global", "MobileRTC.xcframework"));
-
-    Directory copyToMobileRTCXcframeworkDirectory = Directory(
-        join(productionBrandDirectory.path, "ios", "MobileRTC.xcframework"));
-    if (!copyToMobileRTCXcframeworkDirectory.existsSync()) {
-      copyToMobileRTCXcframeworkDirectory.createSync(recursive: true);
-    }
-    if (copyFromMobileRTCXcframeworkDirectory.existsSync()) {
-      ref.read(sourceGenerationProvider.notifier).copyDirectory(
-          copyFromMobileRTCXcframeworkDirectory,
-          copyToMobileRTCXcframeworkDirectory);
-    } else {}
-
-    // MobileRTCResources from global to brand/ios
-
-    Directory copyFromMobileRTCResourceDirectory =
-        Directory(join(sourceLocation, "global", "MobileRTCResources.bundle"));
-
-    Directory copyToMobileRTCResourceDirectory = Directory(join(
-        productionBrandDirectory.path, "ios", "MobileRTCResources.bundle"));
-    if (!copyToMobileRTCResourceDirectory.existsSync()) {
-      copyToMobileRTCResourceDirectory.createSync(recursive: true);
-    }
-    if (copyFromMobileRTCResourceDirectory.existsSync()) {
-      ref.read(sourceGenerationProvider.notifier).copyDirectory(
-          copyFromMobileRTCResourceDirectory, copyToMobileRTCResourceDirectory);
-    } else {}
-
     //appmode.dart from brand to production/brand/lib/services
     String copyFromAppModePath = join(actualBrandLocation, "app_mode.dart");
 
@@ -212,6 +186,42 @@ class BrandDetailsController extends StateNotifier<BrandDetailsGeneric> {
         .read(sourceGenerationProvider.notifier)
         .copyFile(copyFromAssetPathConstantsPath, copyToAssetPathConstantsPath);
 
+    // MobileRTCXcframework from global to brand/ios
+
+    Directory copyFromMobileRTCXcframeworkDirectory =
+        Directory(join(sourceLocation, "global", "MobileRTC.xcframework"));
+
+    Directory copyToMobileRTCXcframeworkDirectory =
+        Directory(join(productionBrandDirectory.path, "ios"));
+    if (!copyToMobileRTCXcframeworkDirectory.existsSync()) {
+      copyToMobileRTCXcframeworkDirectory.createSync(recursive: true);
+    }
+    if (copyFromMobileRTCXcframeworkDirectory.existsSync()) {
+      String command =
+          "rsync -ahP ${copyFromMobileRTCXcframeworkDirectory.path.replaceAll("/Volumes/Macintosh HD", "")} ${copyToMobileRTCXcframeworkDirectory.path.replaceAll("/Volumes/Macintosh HD", "")}";
+      await ref
+          .read(processProvider("rtc_copy").notifier)
+          .runCommand(command: command);
+    } else {}
+
+    // MobileRTCResources from global to brand/ios
+
+    Directory copyFromMobileRTCResourceDirectory =
+        Directory(join(sourceLocation, "global", "MobileRTCResources.bundle"));
+
+    Directory copyToMobileRTCResourceDirectory =
+        Directory(join(productionBrandDirectory.path, "ios"));
+    if (!copyToMobileRTCResourceDirectory.existsSync()) {
+      copyToMobileRTCResourceDirectory.createSync(recursive: true);
+    }
+    if (copyFromMobileRTCResourceDirectory.existsSync()) {
+      String command =
+          "rsync -ahP ${copyFromMobileRTCResourceDirectory.path.replaceAll("/Volumes/Macintosh HD", "")} ${copyToMobileRTCResourceDirectory.path.replaceAll("/Volumes/Macintosh HD", "")}";
+      await ref
+          .read(processProvider("rtc_copy").notifier)
+          .runCommand(command: command);
+    } else {}
+
     await Future.delayed(Duration(seconds: 1));
   }
 
@@ -224,5 +234,18 @@ class BrandDetailsController extends StateNotifier<BrandDetailsGeneric> {
         join(productionDirectory.path, "${state.brandModel?.brandName}"));
     //&& cd android && fastlane release && cd..
     return "cd ${productionBrandDirectory.path.replaceAll("/Volumes/Macintosh HD", "")} && flutter pub get && flutter build appbundle && cd android && fastlane deploy && cd..";
+  }
+
+  getIOSReleaseCommand() async {
+    await setupProject();
+    String sourceLocation = ref.read(brandsV2Provider).sourceLocation ?? "";
+    Directory productionDirectory =
+        Directory(join(sourceLocation, "production"));
+    Directory productionBrandDirectory = Directory(
+        join(productionDirectory.path, "${state.brandModel?.brandName}"));
+    //&& cd android && fastlane release && cd..
+    // final releaseIos =
+    //     "./setup_brand.sh ${widget.brandModel.brandName} && cd shared && cd ios && pod install --repo-update && fastlane release && cd .. && cd .. && ./clear_brand.sh ${widget.brandModel.brandName}";
+    return "cd ${productionBrandDirectory.path.replaceAll("/Volumes/Macintosh HD", "")} && flutter pub get && cd ios && pod install --repo-update && fastlane release version:${state.brandModel!.currentIosVersion} && cd..";
   }
 }

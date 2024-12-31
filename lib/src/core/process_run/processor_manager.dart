@@ -15,7 +15,7 @@ class ProcessorManager {
 
     activeProcessors.add(newProcessInt);
 
-    return processProvider(newProcessInt);
+    return processProvider(newProcessInt.toString());
   }
 
   generateRandomInt() {
